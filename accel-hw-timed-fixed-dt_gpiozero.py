@@ -73,9 +73,16 @@ if __name__ == '__main__':
         # Wait for data collection to finish
         print("Waiting for data collection to finish...")
         done_collecting.wait()
-        print("Data collection finished.")
+        print("Done_collecting event is set; exiting wait loop.")
+        
+        # Print the status of the event
+        if done_collecting.is_set():
+            print("Event 'done_collecting' is set.")
+        else:
+            print("Event 'done_collecting' is not set.")
 
         # Turn off PWM
+        print("Turning off PWM...")
         pwm.off()
         print("PWM turned off.")
 
@@ -97,6 +104,10 @@ if __name__ == '__main__':
         data = []
         number_of_files += 1
         print(f"File number {number_of_files} completed.")
+
+        # Reset done_collecting for the next data collection
+        done_collecting.clear()
+        print("done_collecting event cleared for next collection.")
 
     # End of script
     print("Completed 300 files. Turning off PWM and exiting.")
