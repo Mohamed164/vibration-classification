@@ -58,6 +58,8 @@ def data_acq_callback():
         print("100 samples collected; setting done_collecting event.")
         done_collecting.set()
         num_of_samples = 0
+    else:
+        print(f"Samples collected: {num_of_samples}")
 
 if __name__ == '__main__':
     done_collecting = threading.Event()
@@ -74,7 +76,7 @@ if __name__ == '__main__':
         print("Waiting for data collection to finish...")
         done_collecting.wait()
         print("Done_collecting event is set; exiting wait loop.")
-        
+
         # Print the status of the event
         if done_collecting.is_set():
             print("Event 'done_collecting' is set.")
@@ -85,7 +87,7 @@ if __name__ == '__main__':
         print("Turning off PWM...")
         pwm.off()
         print("PWM turned off.")
-
+        
         # Find the next available file number
         i = 0
         while os.path.exists(f'tape_one_side_202310130706_a/tape_one_side.{i}.csv'):
