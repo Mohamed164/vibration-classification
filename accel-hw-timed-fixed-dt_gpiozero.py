@@ -5,7 +5,7 @@ import adafruit_adxl34x
 import os
 import pandas as pd
 import sys
-from gpiozero import Button, PWM
+from gpiozero import Button, PWMOutputDevice
 
 num_of_samples = 0
 data = []
@@ -19,7 +19,12 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
 # Use gpiozero for button and LED
 button = Button(16, pull_up=True)  # Button on pin 16 with pull-up resistor
-led = PWM(18, frequency=100)  # LED on pin 18 with 100Hz frequency
+
+led = PWMOutputDevice(18, frequency=100)  # Create PWM output on pin 18 with 100 Hz frequency
+# Control the LED's brightness (0.0 to 1.0)
+led.value = 0.5  # Set brightness to 50%
+
+
 
 def data_acq_callback():
   global num_of_samples
@@ -60,7 +65,9 @@ if __name__ == '__main__':
     led.start(50)  # Start LED blinking
     # wait for data collection to finish
     done_collecting.wait()
-    led.stop()  # Stop LED blinking
+    # led.stop()  # Stop LED blinking
+    # Stop the PWM output
+    led.close()
     done_collecting.clear()
 
     # write to a file
@@ -76,5 +83,5 @@ if __name__ == '__main__':
     data = []
     number_of_files = number_of_files + 1
 
-  led.stop()  # Ensure LED is off at the end
+  led.close()  # Ensure LED is off at the end
   sys.exit(0)
