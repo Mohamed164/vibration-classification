@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import sys
 from gpiozero import Button, PWMOutputDevice
+import threading
 
 num_of_samples = 0
 data = []
