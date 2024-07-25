@@ -65,10 +65,10 @@ if __name__ == '__main__':
 
         # Write to a file
         i = 0
-        while os.path.exists(f'tape_one_side_202310130706_a/tape_one_side.{i}.csv'):
+        while os.path.exists(f'output/tape_one_side.{i}.csv'):
             i += 1
 
-        with open(f'tape_one_side_202310130706_a/tape_one_side.{i}.csv', "w") as f:
+        with open(f'output/tape_one_side.{i}.csv', "w") as f:
             df = pd.DataFrame(data)
             df.to_csv(f, index=False, header=True)
             f.write("\n")
