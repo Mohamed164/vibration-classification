@@ -40,12 +40,17 @@ def data_acq_callback():
             accumulated_time = accumulated_time + ts
             previous_time = current_time 
 
-        data_dict = {'timestamp':accumulated_time, 'accX':accel[0], 'accY':accel[1], 'accZ':accel[2]}
+        data_dict = {'timestamp': accumulated_time, 'accX': accel[0], 'accY': accel[1], 'accZ': accel[2]}
         data.append(data_dict)
 
         num_of_samples += 1
-    
+
+        # Print some sample data for debugging
+        if num_of_samples % 10 == 0:
+            print(f"Sample {num_of_samples}: {data_dict}")
+
     if num_of_samples == 100:
+        print("Data collection done for 100 samples.")
         done_collecting.set()
         num_of_samples = 0
 
@@ -55,9 +60,11 @@ if __name__ == '__main__':
 
     # Attach the callback to the button press
     button.when_pressed = data_acq_callback
-        
-    while number_of_files != 300:   
+
+    while number_of_files != 300:
+        print(f"Starting data collection for file {number_of_files + 1}...")
         pwm.value = 0.5  # Start PWM with 50% duty cycle
+        
         # Wait for data collection to finish
         done_collecting.wait()
         pwm.off()  # Stop PWM
@@ -68,14 +75,20 @@ if __name__ == '__main__':
         while os.path.exists(f'tape_one_side_202310130706_a/tape_one_side.{i}.csv'):
             i += 1
 
-        with open(f'tape_one_side_202310130706_a/tape_one_side.{i}.csv', "w") as f:
+        file_name = f'tape_one_side_202310130706_a/tape_one_side.{i}.csv'
+        print(f"Writing data to {file_name}...")
+        with open(file_name, "w") as f:
             df = pd.DataFrame(data)
             df.to_csv(f, index=False, header=True)
             f.write("\n")
 
+        # Print a summary of written data
+        print(f"Data collected: {len(data)} samples")
+        print(f"Sample data (last 5): {data[-5:]}")
+        
         data = []       
         number_of_files += 1
 
     pwm.off()
+    print("Data collection complete. Exiting...")
     sys.exit(0)
-
