@@ -169,6 +169,8 @@ def main(argv):
 
     processed_features = dsp(features)
 
+    print(processed_features)
+
     predictions = tflite_model_inference(modelfile, processed_features)
 
     print(predictions)
