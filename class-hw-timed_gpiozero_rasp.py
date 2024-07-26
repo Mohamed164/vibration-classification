@@ -5,26 +5,20 @@ import time
 import io
 import threading
 import getopt
-import pandas as pd
 import numpy as np
 import busio
 import board
 import adafruit_adxl34x
-import tensorflow as tf
-from tensorflow import lite
-from spectral_analysis import generate_features
+import tflite_runtime.interpreter as tflite
 from gpiozero import Button, PWMOutputDevice
+from spectral_analysis import generate_features
 
 # Variables
 num_of_samples = 0
 data = []
 previous_time = 0
 accumulated_time = 0
-number_of_files = 0
-accel0 = []
-accel1 = []
-accel2 = []
-features = []
+done_collecting = threading.Event()
 
 # Accelerometer setup
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -33,7 +27,6 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 # GPIO setup
 button = Button(16)
 pwm = PWMOutputDevice(18, frequency=100)
-done_collecting = threading.Event()
 
 def dsp(features):
     processed_features = []
@@ -77,7 +70,7 @@ def dsp(features):
 
 def tflite_model_inference(model_path, processed_features):
     # Load the TFLite model
-    interpreter = lite.Interpreter(model_path=model_path)
+    interpreter = tflite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
     # Get input and output tensors
