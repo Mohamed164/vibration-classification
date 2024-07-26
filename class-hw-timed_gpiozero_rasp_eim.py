@@ -6,6 +6,7 @@ import numpy as np
 import busio
 import board
 import adafruit_adxl34x
+import getopt
 from gpiozero import Button, PWMOutputDevice
 import edge_impulse_linux
 
