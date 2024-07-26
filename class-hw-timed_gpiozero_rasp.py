@@ -77,11 +77,20 @@ def tflite_model_inference(model_path, processed_features):
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
 
-    # Scale and reshape the input data
-    scaling_factor = 15 / np.max(processed_features)
-    processed_features_uint8 = np.uint8(processed_features * scaling_factor)
+    # Check the input type
+    input_dtype = input_details[0]['dtype']
+    
+    # Ensure processed_features is of the correct type
+    if input_dtype == np.float32:
+        inputs = processed_features.astype(np.float32)
+    elif input_dtype == np.uint8:
+        scaling_factor = 15 / np.max(processed_features)
+        inputs = np.uint8(processed_features * scaling_factor)
+    else:
+        raise ValueError(f"Unsupported input data type: {input_dtype}")
+
     input_shape = input_details[0]['shape']
-    inputs = processed_features_uint8.reshape(input_shape)
+    inputs = inputs.reshape(input_shape)
 
     # Set input tensor
     interpreter.set_tensor(input_details[0]['index'], inputs)
