@@ -27,7 +27,7 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
 # GPIO setup
 button = Button(16, pull_up=True)
-pwm = PWMOutputDevice(18, frequency=100)
+pwm = PWMOutputDevice(18)
 
 def dsp(features):
     processed_features = []
