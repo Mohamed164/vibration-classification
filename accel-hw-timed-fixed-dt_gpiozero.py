@@ -50,7 +50,19 @@ def data_acq_callback():
         done_collecting.set()
         num_of_samples = 0
 
+def ensure_dir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Error: The 'path' argument is required.")
+        sys.exit(1)
+    
+    path = sys.argv[1]
+    ensure_dir(path)
+    output_base = os.path.basename(path)
+    
     done_collecting = threading.Event()
     done_collecting.clear()
 
@@ -65,10 +77,10 @@ if __name__ == '__main__':
 
         # Write to a file
         i = 0
-        while os.path.exists(f'output/tape_one_side.{i}.csv'):
+        while os.path.exists(f'{path}/{output_base}.{i}.csv'):
             i += 1
 
-        with open(f'output/tape_one_side.{i}.csv', "w") as f:
+        with open(f'{path}/{output_base}.{i}.csv', "w") as f:
             df = pd.DataFrame(data)
             df.to_csv(f, index=False, header=True)
             f.write("\n")
