@@ -8,7 +8,7 @@ import board
 import adafruit_adxl34x
 import getopt
 from gpiozero import Button, PWMOutputDevice
-import edge_impulse_linux
+from edge_impulse_linux.runner import ImpulseRunner
 
 # Variables
 num_of_samples = 0
@@ -71,14 +71,19 @@ def main(argv):
     # Convert data to numpy array and reshape to match the model's expected input shape
     input_data = np.array(data, dtype=np.float32).reshape(1, -1)  # Adjust shape as necessary
 
-    # Load and run the Edge Impulse model
-    model = edge_impulse_linux.InferenceRunner(model_path)
-    result = model.run(input_data)
+    runner = ImpulseRunner(model_path)
+    
+    try:
+        runner.init()
+        features = {'features': input_data.flatten().tolist()}
+        result = runner.classify(features)
 
-    # Process and print the results
-    print(result)
-    for index, value in enumerate(result['result']['classification']):
-        print(f"{result['result']['classification'][index]['label']}: {value['value']}")
+        print(result)
+        for index, value in enumerate(result['result']['classification']):
+            print(f"{index}: {value['label']} - {value['value']}")
+    
+    finally:
+        runner.stop()
 
 if __name__ == '__main__':
     button.when_pressed = data_acq_callback
