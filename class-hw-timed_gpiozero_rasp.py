@@ -12,6 +12,7 @@ import adafruit_adxl34x
 import tflite_runtime.interpreter as tflite
 from gpiozero import Button, PWMOutputDevice
 from spectral_analysis import generate_features
+import scipy
 
 # Variables
 num_of_samples = 0
