@@ -26,7 +26,7 @@ i2c = busio.I2C(board.SCL, board.SDA)
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
 # GPIO setup
-button = Button(16)
+button = Button(16, pull_up=True)
 pwm = PWMOutputDevice(18, frequency=100)
 
 def dsp(features):
