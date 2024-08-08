@@ -10,7 +10,7 @@ NAME = app
 BUILD_PATH = $(BASE_DIR)/build
 
 # Location of main.cpp (must use C++ compiler for main)
-CXXSOURCES = $(BASE_DIR)/main.cpp
+CXXSOURCES = ./main.cpp
 
 # Search path for header files (current directory)
 CFLAGS += -I$(BASE_DIR)
